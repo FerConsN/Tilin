@@ -17,37 +17,37 @@ competition Competition;
 // define your global instances of motors and other devices here
 brain brain1 = brain();
 
-controller controllerChido = controller(primary);
+controller controller1 = controller(primary);
 
 //drivetrain (seen from top front is 1 back is 4)
-motor motorLeft1 = motor(PORT9, ratio6_1, false);
-motor motorLeft2 = motor(PORT8, ratio6_1, false);
-motor motorLeft3 = motor(PORT7, ratio6_1, false);
-motor motorLeft4 = motor(PORT6, ratio6_1, false);
+motor motorLeft1 = motor(PORT1, ratio6_1, false);
+motor motorLeft2 = motor(PORT2, ratio6_1, false);
+motor motorLeft3 = motor(PORT3, ratio6_1, false);
+motor motorLeft4 = motor(PORT4, ratio6_1, false);
 motor_group driveTrainLeft = motor_group(motorLeft1, motorLeft2, motorLeft3, motorLeft4);
 
-motor motorRight1 = motor(PORT19, ratio6_1, false);
-motor motorRight2 = motor(PORT18, ratio6_1, false);
-motor motorRight3 = motor(PORT17, ratio6_1, false);
-motor motorRight4 = motor(PORT16, ratio6_1, false);
+motor motorRight1 = motor(PORT9, ratio6_1, true);
+motor motorRight2 = motor(PORT10, ratio6_1, true);
+motor motorRight3 = motor(PORT11, ratio6_1, true);
+motor motorRight4 = motor(PORT12, ratio6_1, true);
 motor_group driveTrainRight = motor_group(motorRight1, motorRight2, motorRight3, motorRight4);
 
-inertial inertiaSensor = inertial(PORT15, right);
+inertial inertiaSensor = inertial(PORT5);
 
 smartdrive driveTrain = smartdrive(
   driveTrainLeft,
   driveTrainRight, 
   inertiaSensor,
-  320, //wheel diameter
-  320, //track width distance between left and right wheels
-  130, //wheel base distance between fron and back wheels
-  mm, //distance type
-  1.0 // external gear ratio
+  9.425, //wheel circumference
+  10, //track width distance between left and right wheels
+  10.5, //wheel base distance between fron and back wheels
+  inches, //distance type
+  1.0 // external gear ratio9
 );
 
 //motores Elevador
-motor motorElevatorUp = motor(PORT2, ratio18_1, false); 
-motor motorElevatorDown = motor(PORT3, ratio18_1, false);
+motor motorElevatorUp = motor(PORT16, ratio18_1, false); 
+motor motorElevatorDown = motor(PORT17, ratio18_1, false);
 motor_group elevatorMotors = motor_group(motorElevatorUp, motorElevatorDown);
 
 void printHeading (){
@@ -104,9 +104,9 @@ void pre_auton(void) {
 
 void autonomous(void) {
 
-  driveTrain.driveFor(10, inches);
+  driveTrain.driveFor(20, inches);
   driveTrain.turnFor(90, degrees);
-  driveTrain.driveFor(5, inches);
+  driveTrain.driveFor(15, inches);
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
@@ -124,10 +124,13 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+
+    controller1.ButtonX.pressed(printHeading);
+
   while(true){
-    if (controllerChido.ButtonUp.pressing()) {
+    if (controller1.ButtonUp.pressing()) {
     elevatorMotors.spin(forward, 50, percent);
-  } else if (controllerChido.ButtonDown.pressing()){
+  } else if (controller1.ButtonDown.pressing()){
     elevatorMotors.spin(reverse, 50, percent);
   } else {
     elevatorMotors.stop();
@@ -141,14 +144,9 @@ void usercontrol(void) {
 //
 int main() {
 
-
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-
-  controllerChido.ButtonX.pressed(printHeading);
-   
-    
 
   // Run the pre-autonomous function.
   pre_auton();
